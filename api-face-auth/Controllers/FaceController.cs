@@ -34,10 +34,16 @@ namespace api_face_auth.Controllers
             return Json(new { message = "Cadastro do Rosto do usuário em construção"});
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("consultar/{id}")]
         public JsonResult GetFace(int id)
         {
-            return Json(new { idRecebido = id, message="Api em construção"});
+
+            return Json(new { idRecebido = id, message="Esta rota irá consultar o rosto de id "+id+""});
+        }
+
+        [HttpGet("excluir/{id}")]
+        public JsonResult DelFace(int id){
+            return Json(new {idRecebido = id, message= "Esta rota irá excluir o rosto de id "+id+""});
         }
     }
 }
