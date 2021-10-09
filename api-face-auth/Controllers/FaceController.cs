@@ -27,10 +27,7 @@ namespace api_face_auth.Controllers
         [HttpPost("register")]
         public JsonResult registerFace([FromForm] IFormFile imagem)
         {
-            if(imagem.Length > 0)
-            {
-
-            }
+            Console.WriteLine("Imagem recebida");
             return Json(new { message = "Cadastro do Rosto do usuário em construção"});
         }
 
