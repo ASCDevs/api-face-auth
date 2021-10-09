@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api_face_auth.Controllers
 {
+    [Route("[controller]")]
     public class TesteController : Controller
     {
+       
         public IActionResult Index()
         {
             return View();

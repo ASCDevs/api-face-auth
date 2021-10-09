@@ -28,6 +28,7 @@ namespace api_face_auth
         {
 
             services.AddControllers();
+            services.AddMvc();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "api_face_auth", Version = "v1" });
