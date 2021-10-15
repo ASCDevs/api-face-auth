@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Formulário Teste</title>
+    <title>Página de teste</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <style>
         .thumb-img-preview{
@@ -21,7 +21,7 @@
 <body>
     <div class="container">
         <br>
-        <h2>Envio de imagens</h2>
+        <h2>Face Authentication - uploads</h2>
         <hr>
         <div class="row">
             <form method="post" action="/face/register" enctype="multipart/form-data">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Cadastrar Imagens</button>
-                    <button type="button" id="btnEnvia64" class="btn btn-outline-secondary" onclick="enviarImgs64()">Enviar Imagens 64</button>
+                    <button type="button" id="btnEnvia64" class="btn btn-outline-secondary" onclick="enviarImgsBase64()">Enviar Imagens 64</button>
                 </div>
             </form>
         </div>
@@ -54,7 +54,7 @@
         var inputArquivos;
         var listBase64 = [];
        
-       function atualizaPreview(){
+        function atualizaPreview(){
            preview.innerHTML = "";
            listBase64 = [];
            inputArquivos = Array.from(inputImagens.files);
@@ -76,48 +76,64 @@
                 
                 preview.append(img);
             });
-           
-       }
+        }
 
-       function enviarImgsBase64(){
-           var formData = new FormData();
-           listBase64.forEach( x => {
-               formData.append("imagens",x);
-           })
+        function enviarImgsBase64(){
 
+            var newBase64 = []
+            listBase64.forEach(x => {
+                //convert64toBytes(x)
+                newBase64.push(x.split(',')[1]);
+            });
 
-           var request = new XMLHttpRequest();
-           var url = "https://localhost:5001/face/register64";
-           request.open("POST",url,true);
-           request.send(formData);    
+            var dados = {
+                imagens: newBase64
+            }
 
-           var resposta = JSON.stringify(request.response);
-           console.log(resposta);
-       }
+            var url = "https://localhost:5001/face/register64";
+            var url2 = "https://api.github.com/users/ascdevs"; //traz infos do user github -> Tipo GET
 
-       function enviarImgs64(){
+            var reqHeader = new Headers({
+                'Content-Type':'application/json',
+            });
+            
+            let initObject = {
+                method: 'POST', 
+                headers: reqHeader,
+                body: JSON.stringify(dados)
+            };
 
-           var formData = new FormData();
-           formData.append("imagens",listBase64[0])
-           var url = "https://localhost:5001/face/register64";
-           fetch(url,{
-               method: 'POST',
-               body: formData,
-               headers: {
-                   'Content-type' : 'application/json; charset=UTF-8'
-               }
-           }).then(function(response){
-               if(response.ok){
-                   var json = response.json();
-                   console.log(json.message);
-               }
+            fetch(url,initObject)
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function (data){
+                    console.log(data)
+                })
+                .catch(function(err){
+                    console.log("Erro: "+err);
+                })
+            
+        }
 
-           }).then(function(data){
-               console.log(data)
-           }).catch(function(error){
-               console.warn("Algo deu ruim.",error);
-           })
-       }
+        function testeRequest(){
+            var req = new XMLHttpRequest();    
+            var url = "https://localhost:5001/face/register64";
+            req.onload = function(data){
+                let resposta = JSON.parse(req.responseText);
+                console.log(resposta)
+            };
+            req.onerror = function(err){
+                console.log("Erro: "+err);
+            };
+            req.open('POST',url);
+            req.send();
+        }
+
+        function convert64toBytes(data64){
+            let byteChars = window.atob(data64.split(',')[1]);
+            console.log("> "+byteChars);
+        }
         
     </script>
 </body>

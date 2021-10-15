@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Text;
+using api_face_auth.Models;
 
 namespace api_face_auth.Controllers
 {
@@ -43,29 +46,36 @@ namespace api_face_auth.Controllers
         }
 
         [HttpPost("register64")]
-        public JsonResult register64Face(string imagem){
-            //Fazer tratamento para validar extensão das imagens
-            if(imagens == null){
-                Console.WriteLine("Requisição register64> nada recebido");
-                return Json(new {message = "Parametro vazio"});
-            }
+        public JsonResult register64Face(TesteModel conteudo){
 
-            Byte[] bytesImg = Convert.FromBase64String(imagem);
+            List<Byte[]> bytesImg = new List<byte[]>();
 
-            if(bytesImg.Length > 0){
-                using (var stream = new FileStream(arquivo, FileMode.Create)){
-                    stream.Write(bytesImg,0,bytesImg.Length);
-                    stream.Flush();
-                }
-            }
+            foreach(var img in conteudo.imagens){
+                 bytesImg.Add(Convert.FromBase64String(img));
+             }
+
+            Console.WriteLine("register64> Lista de bytes:"+bytesImg.Count());
+
+            TesteController teste = new TesteController();
             
+            // foreach(var dadosImgByte in bytesImg){
+            //     //var path = HttpContext.Current.Server.MapPath("~/Uploads/"+Guid.NewGuid());
+            //     var path = @"~/Uploads/"+Guid.NewGuid()+".jpg";
+            //     File.WriteAllBytes(path, dadosImgByte);
+            // }
 
-            Console.WriteLine("Requisição register64 chegou no server");
+           //if(bytesImg.Length > 0){
+                // using (var stream = new FileStream(arquivo, FileMode.Create)){
+                //     stream.Write(bytesImg,0,bytesImg.Length);
+                //     stream.Flush();
+                // }
+            //}
+            int qtdRecebida = conteudo.imagens.Count();
 
+            Console.WriteLine("register64> quantidade de imgs: "+qtdRecebida);
 
-            return Json(new { message = "Rota para receber imagens em base 64"});
+            return Json(new {imsgQtd = qtdRecebida, message = "Rota para receber imagens em base 64"});
         }
-
 
         [HttpGet("consultar/{id}")]
         public JsonResult GetFace(int id)
