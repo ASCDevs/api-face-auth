@@ -48,31 +48,50 @@ namespace api_face_auth.Controllers
         [HttpPost("register64")]
         public JsonResult register64Face(TesteModel conteudo){
 
-            List<Byte[]> bytesImg = new List<byte[]>();
+            List<FaceModel> faceImages = new List<FaceModel>();
 
             foreach(var img in conteudo.imagens){
-                 bytesImg.Add(Convert.FromBase64String(img));
-             }
+                string[] imgDados = img.Split(',');
 
-            Console.WriteLine("register64> Lista de bytes:"+bytesImg.Count());
+                faceImages.Add(new FaceModel{
+                    nomeId = Guid.NewGuid().ToString(),
+                    dtCriacao = DateTime.Now,
+                    metaDados = imgDados[0],
+                    extensao = imgDados[0].Split(';')[0].Split('/')[1],
+                    imagemBytes = Convert.FromBase64String(imgDados[1])
+                });
+            }
 
-            TesteController teste = new TesteController();
+            foreach(var face in faceImages){
+                Console.WriteLine("--");
+                Console.WriteLine("NomeId> "+face.nomeId);
+                Console.WriteLine("dtCriacao> "+face.dtCriacao);
+                Console.WriteLine("metaDados> "+face.metaDados);
+                Console.WriteLine("extensao> "+face.extensao);
+                
+                try{
+                    string caminho  = @"./Uploads/";
+                    DirectoryInfo dir = Directory.CreateDirectory(caminho);
+                    
+                    string path = caminho+face.nomeId+"."+face.extensao; 
+
+                    using( var fs = new FileStream(path,FileMode.Create,FileAccess.Write)){
+                        fs.Write(face.imagemBytes,0,face.imagemBytes.Length);
+                    }
+
+                }catch(Exception e){
+                    Console.WriteLine("Erro: "+e.Message);
+                }
+            }
+
+
             
-            // foreach(var dadosImgByte in bytesImg){
-            //     //var path = HttpContext.Current.Server.MapPath("~/Uploads/"+Guid.NewGuid());
-            //     var path = @"~/Uploads/"+Guid.NewGuid()+".jpg";
-            //     File.WriteAllBytes(path, dadosImgByte);
-            // }
-
-           //if(bytesImg.Length > 0){
-                // using (var stream = new FileStream(arquivo, FileMode.Create)){
-                //     stream.Write(bytesImg,0,bytesImg.Length);
-                //     stream.Flush();
-                // }
-            //}
+            
             int qtdRecebida = conteudo.imagens.Count();
 
+            Console.WriteLine("register64> Lista de FaceImages:"+faceImages.Count());
             Console.WriteLine("register64> quantidade de imgs: "+qtdRecebida);
+            Console.WriteLine("---------------");
 
             return Json(new {imsgQtd = qtdRecebida, message = "Rota para receber imagens em base 64"});
         }

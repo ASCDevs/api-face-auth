@@ -80,14 +80,8 @@
 
         function enviarImgsBase64(){
 
-            var newBase64 = []
-            listBase64.forEach(x => {
-                //convert64toBytes(x)
-                newBase64.push(x.split(',')[1]);
-            });
-
             var dados = {
-                imagens: newBase64
+                imagens: listBase64
             }
 
             var url = "https://localhost:5001/face/register64";
@@ -128,11 +122,6 @@
             };
             req.open('POST',url);
             req.send();
-        }
-
-        function convert64toBytes(data64){
-            let byteChars = window.atob(data64.split(',')[1]);
-            console.log("> "+byteChars);
         }
         
     </script>
