@@ -56,5 +56,6 @@ namespace api_face_auth
                 endpoints.MapControllers();
             });
         }
+
     }
 }
