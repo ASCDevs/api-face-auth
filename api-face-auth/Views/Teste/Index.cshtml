@@ -26,12 +26,36 @@
         <div class="row">
             <form method="post" action="/face/register" enctype="multipart/form-data">
                 <div class="mb-3">
+                    
                     <label for="inputImagens" class="form-label">Anexar imagem</label>
                     <input type="file" id="inputImagens" name="imagens" onchange="atualizaPreview()" class="form-control" multiple>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input id="campoNome" type="text" class="form-control"  placeholder="Nome" name="name">
+                        </div>
+                        <div class="col">
+                            <label for="username" class="form-label">Username</label>
+                            <input id="campoUsername" type="text" class="form-control"  placeholder="Username" name="usename">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="password" class="form-label">Senha</label>
+                            <input id="campoSenha" type="password" class="form-control"  placeholder="Senha" name="password">
+                        </div>
+                        <div class="col">
+                            <label for="password" class="form-label">Email</label>
+                            <input id="campoEmail" type="text" class="form-control"  placeholder="Email" name="password">
+                        </div>
+                    </div>
+                        
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">Cadastrar Imagens</button>
-                    <button type="button" id="btnEnvia64" class="btn btn-outline-secondary" onclick="enviarImgsBase64()">Enviar Imagens 64</button>
+                    @* <button type="submit" class="btn btn-primary">Cadastrar Imagens</button> *@
+                    <button type="button" id="btnEnvia64" class="btn btn-primary" onclick="enviarImgsBase64()">Cadastrar Usuário</button>
                 </div>
             </form>
         </div>
@@ -41,8 +65,6 @@
             <div class="row">
                 <div class="mb-3" id="imgs-preview">
                     @* <img class="thumb-img-preview img-thumbnail" src="" alt="..."> *@
-                    @* <img class="thumb-img-preview img-thumbnail" src="https://tecnitainer.com.br/wp-content/uploads/2015/10/400x4005.png" alt="...">
-                    <img class="thumb-img-preview img-thumbnail" src="https://images.unsplash.com/photo-1633713616209-901256dc3d06?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80" alt="..."> *@
                 </div>
             </div>
         </div>
@@ -81,11 +103,15 @@
         function enviarImgsBase64(){
 
             var dados = {
-                imagens: listBase64
+                name: document.getElementById("campoNome").value,
+                username: document.getElementById("campoUsername").value,
+                password: document.getElementById("campoSenha").value,
+                email: document.getElementById("campoEmail").value,
+                imagesBase64: listBase64
             }
 
             var url = "https://localhost:5001/face/register64";
-            var url2 = "https://api.github.com/users/ascdevs"; //traz infos do user github -> Tipo GET
+            //var url2 = "https://api.github.com/users/ascdevs"; //traz infos do user github -> Tipo GET
 
             var reqHeader = new Headers({
                 'Content-Type':'application/json',
