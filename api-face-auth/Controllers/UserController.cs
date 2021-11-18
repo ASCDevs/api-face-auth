@@ -12,44 +12,65 @@ using api_face_auth.DataSqlite;
 using api_face_auth.DataSqlite.Entities;
 
 namespace api_face_auth.Controllers
-{
+{    
     [ApiController]
-    [Route("[controller]")]
-    public class FaceController : Controller
+    [Route("user")]
+    public class UserController : Controller
     {
+        private readonly AppDbContext _context;
 
-        [HttpGet]
-        public JsonResult statusFaces()
+        public UserController(AppDbContext context)
         {
-            var dados = new { 
-                imgsCadastradas = 0,
-                dataStatus = DateTime.Now,
-                quatidadeUsers = 0
-            };
-
-            return Json(dados);
+            _context = context;
         }
 
         [HttpPost("register")]
-        public JsonResult registerFace([FromForm] List<IFormFile> imagens)
+        public ActionResult registerUser(UserRegisterModel newUser)
         {
-            //Fazer tratamento para validar extensão das imagens
-            if(imagens.Count()==0){
-                return Json(new {message="Nenhuma imagem recebida"});
-            }
-            int qtdRecebida = imagens.Count();
-            List<string> nomesImgs = new List<string>();
-            foreach (var img in imagens)
+            //Implementar tratamento de exceção
+            if (ModelState.IsValid)
             {
-                nomesImgs.Add(img.FileName);
+                if (newUser == null)
+                {
+                    return BadRequest(Json(new { message = "Nenhum usuário a ser cadastrado" }));
+                }
+
+                User newUserDb = new User
+                {
+                    name = newUser.name,
+                    surname = newUser.surname,
+                    username = newUser.username,
+                    password = newUser.password,
+                    email = newUser.email,
+                    registerDate = DateTime.Now
+                };
+                
+              _context.Users.Add(newUserDb);
+                int idUser = 0; //retornar do banco
+
+                foreach(var faceString in newUser.imagesBase64)
+                {
+                    string[] imageData = faceString.Split(',');
+
+                    _context.UsersFace.Add(new UserFace
+                    {
+                        iduser = idUser,
+                        image = Convert.FromBase64String(imageData[1])
+                    });
+
+                }
+                _context.SaveChanges();
+            }
+            else
+            {
+                return BadRequest(Json(new { message = "Usuário a ser cadastrado é inválido"}));
             }
 
-            Console.WriteLine($"Imagem recebida ({qtdRecebida})");
-            return Json(new { qtdRecebida = qtdRecebida, nomes = nomesImgs.ToArray(), message = "Cadastro do Rosto do usuário em construção"});
+            return Ok(Json(new { message = "Usuário cadastrado com sucesso!"}));
         }
 
         [HttpPost("register64")]
-        public async Task<JsonResult> register64Face(UserFrontModel newUser,[FromServices] AppDbContext context){
+        public async Task<JsonResult> register64Face(UserRegisterModel newUser,[FromServices] AppDbContext context){
 
             var user = new User{
                 nome = newUser.name,
