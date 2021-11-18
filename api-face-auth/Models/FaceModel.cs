@@ -7,10 +7,8 @@ namespace api_face_auth.Models
 {
     public class FaceModel
     {
-        public string nomeId { get; set; }
-        public DateTime dtCriacao { get; set; }
-        public string metaDados {get;set;}
-        public string extensao {get;set;}
-        public Byte[] imagemBytes { get; set; }
+        public string idUser { get; set; }
+        public DateTime createdDate { get; set; }
+        public Byte[] imageBytes { get; set; }
     }
 }
