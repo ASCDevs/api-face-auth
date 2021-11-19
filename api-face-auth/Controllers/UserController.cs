@@ -10,6 +10,7 @@ using System.Text;
 using api_face_auth.Models;
 using api_face_auth.DataSqlite;
 using api_face_auth.DataSqlite.Entities;
+using api_face_auth.DataSqlite.Manager;
 
 namespace api_face_auth.Controllers
 {    
@@ -17,54 +18,65 @@ namespace api_face_auth.Controllers
     [Route("user")]
     public class UserController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ContextManager _manager;
 
-        public UserController(AppDbContext context)
+        public UserController(ContextManager manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         [HttpPost("register")]
         public ActionResult registerUser(UserRegisterModel newUser)
         {
-            //Implementar tratamento de exceção
-            if (ModelState.IsValid)
+            try
             {
-                if (newUser == null)
+                if (ModelState.IsValid)
                 {
-                    return BadRequest(Json(new { message = "Nenhum usuário a ser cadastrado" }));
-                }
-
-                User newUserDb = new User
-                {
-                    name = newUser.name,
-                    surname = newUser.surname,
-                    username = newUser.username,
-                    password = newUser.password,
-                    email = newUser.email,
-                    registerDate = DateTime.Now
-                };
-                
-              _context.Users.Add(newUserDb);
-                int idUser = 0; //retornar do banco
-
-                foreach(var faceString in newUser.imagesBase64)
-                {
-                    string[] imageData = faceString.Split(',');
-
-                    _context.UsersFace.Add(new UserFace
+                    if (newUser == null)
                     {
-                        iduser = idUser,
-                        image = Convert.FromBase64String(imageData[1])
-                    });
+                        return BadRequest(Json(new { message = "Nenhum usuário a ser cadastrado" }));
+                    }
 
+                    User newUserDb = new User
+                    {
+                        name = newUser.name,
+                        surname = newUser.surname,
+                        username = newUser.username,
+                        password = newUser.password,
+                        email = newUser.email,
+                        registerDate = DateTime.Now
+                    };
+
+
+                    int idUser = _manager.CreateUser(newUserDb);
+                    List<UserFace> faceInfoList = new List<UserFace>();
+
+                    foreach (var faceString in newUser.imagesBase64)
+                    {
+                        string[] imageData = faceString.Split(',');
+
+                        faceInfoList.Add(new UserFace
+                        {
+                            iduser = idUser,
+                            image = Convert.FromBase64String(imageData[1])
+                        });
+
+                    }
+
+                    _manager.CreateUserFaceInfo(faceInfoList);
                 }
-                _context.SaveChanges();
+                else
+                {
+                    return BadRequest(Json(new { message = "Usuário a ser cadastrado é inválido" }));
+                }
+
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest(Json(new { message = "Usuário a ser cadastrado é inválido"}));
+                //Implementar Status Code
+                return (Json(new { message = e.Message}));
             }
+            
 
             return Ok(Json(new { message = "Usuário cadastrado com sucesso!"}));
         }
