@@ -1,4 +1,6 @@
 using api_face_auth.DataSqlite;
+using api_face_auth.DataSqlite.Manager;
+using api_face_auth.DataSqlite.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +36,8 @@ namespace api_face_auth
             services.AddDbContext<AppDbContext>(options => options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")
                 ));
+            services.AddTransient<ContextStore>();
+            services.AddTransient<ContextManager>();
             // services.AddSwaggerGen(c =>
             // {
             //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "api_face_auth", Version = "v1" });
