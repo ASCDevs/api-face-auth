@@ -25,6 +25,12 @@ namespace api_face_auth.Controllers
             _manager = manager;
         }
 
+        [HttpGet]
+        public ActionResult getUsers()
+        {
+            return Ok();
+        }
+
         [HttpPost("register")]
         public ActionResult registerUser(UserRegisterModel newUser)
         {
@@ -83,16 +89,18 @@ namespace api_face_auth.Controllers
 
         
 
-        [HttpGet("consultar/{id}")]
-        public JsonResult GetFace(int id)
+        [HttpGet("find/{id}")]
+        public JsonResult getUser(int id)
         {
 
             return Json(new { idRecebido = id, message="Esta rota irá consultar o rosto de id "+id+""});
         }
 
-        [HttpGet("excluir/{id}")]
-        public JsonResult DelFace(int id){
+        [HttpPost("delete/{id}")]
+        public JsonResult deleteUser(int id){
             return Json(new {idRecebido = id, message= "Esta rota irá excluir o rosto de id "+id+""});
         }
+
+        
     }
 }
