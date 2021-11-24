@@ -35,6 +35,7 @@ namespace api_face_auth.DataSqlite.Store
             try
             {
                 _context.UsersFace.AddRange(faceInfoList);
+                _context.SaveChanges();
 
             }
             catch (Exception e)

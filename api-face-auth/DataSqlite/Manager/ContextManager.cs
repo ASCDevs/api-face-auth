@@ -20,9 +20,9 @@ namespace api_face_auth.DataSqlite.Manager
             return _store.CreateUser(newUser);
         }
 
-        public void CreateUserFaceInfo(UserFace newFaceInfo)
+        public void CreateUserFaceInfo(List<UserFace> newFaceInfo)
         {
-            _store.CreateUser(newFaceInfo);
+            _store.CreateUserFaceInfo(newFaceInfo);
         }
     }
 }
