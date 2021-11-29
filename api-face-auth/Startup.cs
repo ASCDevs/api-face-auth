@@ -30,10 +30,9 @@ namespace api_face_auth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            
             services.AddControllersWithViews();
-            services.AddControllers();
-            services.AddMvc();
+            
             services.AddDbContext<AppDbContext>(options => options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")
                 ));
@@ -55,7 +54,7 @@ namespace api_face_auth
             }
 
             app.UseHttpsRedirection();
-            //app.UseStaticFiles(); ??
+            app.UseStaticFiles();
 
             app.UseRouting();
 
