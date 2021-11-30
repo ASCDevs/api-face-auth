@@ -1,26 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Login";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
-<style>
-    .fundo-login{
-        background-color: beige;
-        flex:1;
-        display: flex;
-        align-items: stretch;
-    }
-</style>
+@* Baseado em https://codepen.io/Rh2o/pen/yLgxJoG *@
+@* https://cssgradient.io/ *@
+@* https://cssgradient.io/blog/css-gradient-text/ *@
 
-<div class="fundo-login">
-    <div class="banner-projeto">
-        
-    </div>
-    <div class="row login-area"> 
-        <div class="col-md" style="background-color: yellow; ">
-            <p>Descrição da aplicação</p>
+<div class="login-box">
+    <div class="row login-area">
+        <div class="col-md login-desc">
+            Descrição da aplicação
         </div>
-        <div class="col-md" style="background-color: blue; max-width:400px">
-            <p>Área de campos de login </p>
+        <div class="col-md login-campos">
+            <h3>Log in</h3>
+            <form action="">
+                <input class="mb-1" type="text" name="username"><br>
+                <input class="mb-3" type="password"name="password"><br>
+                <button type="button" class="btn btn-primary">Entrar</button>
+                <button type="button" class="btn btn-light">Cadastrar</button>
+            </form>
         </div>
     </div>
 </div>
